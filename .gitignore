@@ -1,0 +1,12 @@
+node_modules
+build
+dist
+data
+*.env
+dbfiles
+!README.md
+!LICENSE.md
+*.md
+.DS_Store
+package-lock.json
+run.js

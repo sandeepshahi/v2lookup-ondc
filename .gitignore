@@ -4,9 +4,10 @@ dist
 data
 *.env
 dbfiles
-!README.md
 !LICENSE.md
 *.md
+!README.md
 .DS_Store
 package-lock.json
 run.js
+response.json

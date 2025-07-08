@@ -2,6 +2,7 @@ import axios, { AxiosError } from "axios";
 import { REGISTRY_URLS } from "../config/constants";
 import "dotenv/config";
 import sodium from "libsodium-wrappers";
+import { writeFile } from "fs/promises";
 
 const getEnvDetails = (env: string) => {
   let envLink = "";
@@ -76,9 +77,20 @@ const createHeader = (
   return header;
 };
 
+const saveJsonResponse = (res: any) => {
+  try {
+    // Save the response data to a file
+    writeFile("response.json", res);
+
+    console.log("Registry response saved to response.json");
+  } catch (error) {
+    console.error("Error saving response:", error);
+  }
+};
+
 export const v2LookUp = async (data: any) => {
   try {
-    const { subscriberId, privateKey, ukId, env, payload } = data;
+    const { subscriberId, privateKey, ukId, env, payload, saveJson } = data;
     const stringifiedPayload = JSON.stringify(payload);
 
     const { signingString, created, expires } = await createSigningString(
@@ -100,7 +112,8 @@ export const v2LookUp = async (data: any) => {
 
     let res = await fetchRegistryResponse(stringifiedPayload, header, envLink);
 
-    const resString = JSON.stringify(res.data);
+    const resString = JSON.stringify(res.data, null, 2);
+    if (saveJson) saveJsonResponse(resString);
 
     return resString;
   } catch (error: unknown) {
